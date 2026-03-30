@@ -1,0 +1,138 @@
+{% extends "template.html" %}
+{% block title %} Pozajmice {% endblock %}
+{% block content %}
+
+<!-- Directly center the table inside its container div -->
+<div class="table-container">
+    <table>
+        <thead>
+            <tr>
+                <th>ID Pozajmice</th>
+                <th>ID Primerka</th>
+                <th>Naziv</th>
+                <th>Ime Člana</th>
+                <th>Ime Odgovornog Lica</th>
+                <th>Godina Izdanja</th>
+                <th>Izdavačka Kuća</th>
+                <th>Datum Pozajmice</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for d in dugovi %}
+            <tr>
+                <td>{{ d['idPozajmice'] }}</td>
+                <td>{{ d['idPrimerka'] }}</td>
+                <td>{{ d['naziv'] }}</td>
+                <td>{{ d['imeClana'] }}</td>
+                <td>{{ d['imeRadnika'] }}</td>
+                <td>{{ d['godinaIzdanja'] }}</td>
+                <td>{{ d['izdavackaKuca'] }}</td>
+                <td>{{ d['datumPozajmice'] }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+<br><br>
+<form action="/pozajmice" method="post" autocomplete="off">
+    <div style="text-align: center; max-width: 650px; margin-left: auto; margin-right: auto;">
+        <table style="margin-left: 20px; margin-right: auto;">
+            <thead>
+                <tr>
+                    <th colspan="4">Dodaj Novu Pozajmicu</th>
+                </tr>
+                <tr> 
+                    <th>Član</th>
+                    <th>Broj Knjige</th>
+                    <th>Zaposleni</th>
+                    <th>Primerak</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <select name="memberID">
+                            {% for o in one %}
+                            <option value="{{ o['idClana'] }}">{{ o['idClana']}} - {{ o['imeClana']}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select name="bookID" id="bookSelect">
+                            {% for t in tre %}
+                            <option value="{{t['idKnjige']}}">{{t['idKnjige']}} - {{t['naziv']}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select name="slaveID">
+                            {% for t in two %}
+                            <option value="{{ t['idZaposlenog'] }}">{{ t['idZaposlenog'] }} - {{ t['imeRadnika'] }}
+                            </option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <select name="copyID" id="copySelect">
+                            {% for f in fou %}
+                            <option value="{{ f['idPrimerka']}}">{{f['idPrimerka']}}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+        <br>
+        <button type="submit" style="display: block; margin: 0 auto">
+            Kliknuti za dodavanje
+        </button>
+    </div>
+</form>
+
+<br><br>
+
+<div style="text-align: center;max-width: 650px; margin-left: auto; margin-right: auto;">
+<form action="/pozajmice" method="post" autocomplete="off">
+        <input type="hidden" name="action" value="delete">
+        <label>Izaberite pozajmicu za brisanje:</label><br>
+        <select name="deleteID">
+            {% for d in dugovi %}
+            <option value="{{ d['idPozajmice'] }}">
+                {{ d['idPozajmice'] }} - {{ d['naziv']}} - {{ d['imeClana'] }}
+            </option>
+            {% endfor %}
+        </select>
+        <button type="submit">
+            Obriši
+        </button>
+</form>
+</div>
+
+<script>
+    const primerci = {{ fou | tojson | safe }};
+    console.log(primerci);
+
+    const bookSelect = document.getElementById("bookSelect");
+    const copySelect = document.getElementById("copySelect");
+
+    function updateCopies() {
+        const selectedBook = bookSelect.value;
+
+        copySelect.innerHTML = "";
+
+        primerci
+            .filter(p => p.idKnjige == selectedBook)
+            .forEach(p => {
+                const option = document.createElement("option");
+                option.value = p.idPrimerka;
+                option.textContent = p.idPrimerka;
+                copySelect.appendChild(option);
+            });
+    }
+
+    bookSelect.addEventListener("change", updateCopies);
+
+    updateCopies();
+</script>
+
+{% endblock %}

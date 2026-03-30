@@ -1,0 +1,47 @@
+{% extends "template.html" %}
+{% block title %} Zaposleni {% endblock %}
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>ID Radnika</th>
+            <th>Ime i Prezime</th>
+            <th>Državljanstvo</th>
+            <th colspan="2">Identifikacioni Broj</th>
+            <th>Datum Početka Rada</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="3"></td>
+            <th>Matični Broj</th>
+            <th>Ekvivalenta istog</th>
+            <td></td>
+        </tr>
+        {% for s in slaves %}
+        <tr>
+            <td>{{ s['idZaposlenog'] }}</td>
+            <td>{{ s['ime'] }}</td>
+            <td>{{ s['drzavljanstvo'] }}</td>
+            {% if s['JMBG'] != None %}
+                <td>{{ s['JMBG'] }}</td>
+            {% else %}
+                <td></td>
+            {% endif %}
+            {% if s['JMBGequiv'] != None %}
+                <td>{{ s['JMBGequiv'] }}</td>
+            {% else %}
+                <td></td>
+            {% endif %}
+                <td>{{ s['datumPocetkaRada'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br><br><br><br>
+<p>
+    Zbog osiguranja radnika i prevencije slučajnog dodavanja ili oduzimanja tabeli, nije moguće
+    menjati spisak zaposlenih u biblioteci "Kreka Banovići" preko web-sajta biblioteke. Ovu dužnost 
+    podnosi službeno lice sa zakonskim pravom svojine.
+</p>
+{% endblock %}

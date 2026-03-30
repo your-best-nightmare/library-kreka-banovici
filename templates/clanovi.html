@@ -1,0 +1,137 @@
+{% extends "template.html" %}
+{% block title %} Članovi {% endblock %}
+{% block content %}
+<table class="main-table">
+    <thead>
+        <tr>
+            <th>ID Člana</th>
+            <th>Ime i Prezime</th>
+            <th>Državljanstvo</th>
+            <th colspan="2">Identifikacioni Broj</th>
+            <th>Placena Clanarina?</th>
+        </tr>
+    </thead>
+    <tbody>
+        <tr>
+            <td colspan="3"></td>
+            <th>Matični Broj</th>
+            <th>Ekvivalenta istog</th>
+            <td></td>
+        </tr>
+        {% for m in members %}
+        <tr>
+            <td>{{ m['idClana'] }}</td>
+            <td>{{ m['ime'] }}</td>
+            <td>{{ m['drzavljanstvo'] }}</td>
+            {% if m['JMBG'] != None %}
+            <td>{{ m['JMBG'] }}</td>
+            {% else %}
+            <td></td>
+            {% endif %}
+            {% if m['JMBGequiv'] != None %}
+            <td>{{ m['JMBGequiv'] }}</td>
+            {% else %}
+            <td></td>
+            {% endif %}
+            {% if m['placenaClanarina'] == 1 %}
+            <td>Jeste</td>
+            {% else %}
+            <td>Nije</td>
+            {% endif %}
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br><br>
+<div class="table-container">
+    <div style="text-align: center;max-width: 650px; margin-left: auto; margin-right: auto;">
+        <form action="/clanovi" method="post">
+            <table style="margin-left: 20px; margin-right: auto;">
+                <thead>
+                    <tr>
+                        <th colspan="3">Neuplaćene Članarine</th>
+                    </tr>
+                    <tr>
+                        <th>ID</th>
+                        <th>Ime i Prezime</th>
+                        <th>Članarina</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for m in members %}
+                    {% if m['placenaClanarina'] != 1 %}
+                    <tr>
+                        <td>{{ m['idClana'] }}</td>
+                        <td>{{ m['ime'] }}</td>
+                        <td>
+                            Razdužiti Članarinu?
+                            <input type="checkbox" name="selectedUpdateClanarina" value="{{m['idClana']}}">
+                        </td>
+                    </tr>
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+            </table>
+            <br>
+            <button type="submit" style="display: block; margin: 0 auto">
+                Kliknuti za razduživanje
+            </button>
+        </form>
+    </div>
+    <br><br>
+    <div style="text-align: center;max-width: 650px; margin-left: auto; margin-right: auto;">
+        <form action="/clanovi" method="post" autocomplete="off">
+            <table style="margin-left: 20px; margin-right: auto;">
+                <thead>
+                    <tr>
+                        <th colspan="2">Dodaj Novog Člana</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr>
+                        <th>Ime</th>
+                        <td><input type="text" name="insertIme"></td>
+                    </tr>
+                    <tr>
+                        <th>Prezime</th>
+                        <td><input type="text" name="insertPrezime"></td>
+                    </tr>
+                    <tr>
+                        <th>Državljanstvo</th>
+                        <td><input type="text" name="insertNation"></td>
+                    </tr>
+                    <tr>
+                        <th>JMBG</th>
+                        <td><input type="text" name="insertJMBG"></td>
+                    </tr>
+                    <tr>
+                        <th>Ekvivalenta istog</th>
+                        <td><input type="text" placeholder="Ovo polje nije neophodno" name="insertJMBGequiv"></td>
+                    </tr>
+                </tbody>
+            </table>
+            <br>
+            <button type="submit" style="display: block; margin: 0 auto">
+                Kliknuti za dodavanje
+            </button>
+        </form>
+    </div>
+</div>
+<br><br>
+<div style="text-align: center; max-width: 650px; margin-left: auto; margin-right: auto;">
+    <form action="/clanovi" method="post" autocomplete="off">
+        <input type="hidden" name="action" value="delete">
+        <label>Izaberite člana za brisanje:</label>
+        <select name="deleteId">
+            {% for m in members %}
+            <option value="{{ m['idClana'] }}">
+                {{ m['idClana'] }} - {{ m['ime'] }}
+            </option>
+            {% endfor %}
+        </select>
+        <button type="submit" onclick="return confirm('Sigurno obrisati člana?')">
+            Obriši
+        </button>
+    </form>
+</div>
+{% endblock %}

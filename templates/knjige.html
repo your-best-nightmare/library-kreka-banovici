@@ -1,0 +1,90 @@
+{% extends "template.html" %}
+{% block title %} Knjige {% endblock %}
+{% block content %}
+<table>
+    <thead>
+        <tr>
+            <th>ID Primerka</th>
+            <th>ID Knjige</th>
+            <th>Naziv</th>
+            <th>Autor</th>
+            <th>Godina Izdanja</th>
+            <th>Izdavačka Kuća</th>
+        </tr>
+    </thead>
+    <tbody>
+        {% for b in books %}
+        <tr>
+            <td>{{ b['idPrimerka'] }}</td>
+            <td>{{ b['idKnjige'] }}</td>
+            <td>{{ b['naziv'] }}</td>
+            <td>{{ b['autor'] }}</td>
+            <td>{{ b['godinaIzdanja'] }}</td>
+            <td>{{ b['izdavackaKuca'] }}</td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+<br><br>
+
+<form action="/knjige" method="post" autocomplete="off">
+    <table>
+        <thead>
+            <tr>
+                <th colspan="4">Dodaj Novu Knjigu</th>
+            </tr>
+            <tr>
+                <th>Naziv</th>
+                <th>Autor</th>
+                <th>Godina Izdanja</th>
+                <th>Izdavačka Kuća</th>
+            </tr>
+        </thead>
+            <tbody>
+                <tr>
+                    <td>
+                        <input list="knijge" id="nazivKnjige" name="nazivKnjige" />
+                        <datalist id="knijge">
+                            {% set ns = namespace(seen=[]) %}
+                            {% for b in books %}
+                            {% if b.naziv not in ns.seen %}
+                            {% set ns.seen = ns.seen + [b.naziv] %}
+                            <option value="{{ b.naziv }}">{{ b.naziv }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </datalist>
+                    </td>
+                    <td>
+                        <input list="autori" id="imeAutora" name="imeAutora" />
+                        <datalist id="autori">
+                            {% set ns = namespace(seen=[]) %}
+                            {% for b in books %}
+                            {% if b.autor not in ns.seen %}
+                            {% set ns.seen = ns.seen + [b.autor] %}
+                            <option value="{{ b.autor }}">{{ b.autor }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </datalist>
+                    </td>
+                    <td><input type="text" name="godIzdanja"></td>
+                    <td>
+                        <input list="kuce" id="izdavackeKuce" name="izdavackeKuce" />
+                        <datalist id="kuce">
+                            {% set ns = namespace(seen=[]) %}
+                            {% for b in books %}
+                            {% if b.izdavackaKuca not in ns.seen %}
+                            {% set ns.seen = ns.seen + [b.izdavackaKuca] %}
+                            <option value="{{ b.izdavackaKuca }}">{{ b.izdavackaKuca }}</option>
+                            {% endif %}
+                            {% endfor %}
+                        </datalist>
+                    </td>
+                </tr>
+            </tbody>
+    </table>
+    <br>
+    <button type="submit" style="display: block; margin: 0 auto">
+        Kliknuti za dodavanje
+    </button>
+</form>
+{% endblock %}
